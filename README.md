@@ -1,5 +1,7 @@
 # ada-chatbot-builder-backend
 Create the .env based on the .example
+For the secret_key run command on bash and copy
+"openssl rand -hex 32"
 
 Initialize python virtual enviornment
 "python -m venv .venv"

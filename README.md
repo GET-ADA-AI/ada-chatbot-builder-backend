@@ -14,3 +14,5 @@ Run the app localy
 
 To use docker write in terminal
 "docker compose up --build"
+
+When running the app, to see it on the browser type http://<host_machine_ip>:8000

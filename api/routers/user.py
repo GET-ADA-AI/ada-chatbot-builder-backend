@@ -1,10 +1,10 @@
 # Un router es una serie de operaciones especificas a una ruta
 # /user
 from fastapi import APIRouter, Depends
-from schemas.user import UserCreate, UserGet, UserUpdate, UserUpdatePassword
-from services.user import UserService
-from services.jwt import JwtService
-from services.utils.db import get_db
+from api.schemas.user import UserCreate, UserGet, UserUpdate, UserUpdatePassword
+from api.services.user import UserService
+from api.services.jwt import JwtService
+from api.services.utils.db import get_db
 from sqlalchemy.orm import Session
 from typing import List
 

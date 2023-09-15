@@ -1,8 +1,8 @@
-from schemas.user import UserCreate, UserGet, UserUpdate, UserUpdatePassword
+from api.schemas.user import UserCreate, UserGet, UserUpdate, UserUpdatePassword
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
-from models.user import UserModel
+from api.models.user import UserModel
 from typing import List
 import bcrypt
 

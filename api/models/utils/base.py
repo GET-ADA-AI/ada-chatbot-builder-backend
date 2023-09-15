@@ -1,5 +1,5 @@
 # models/utils/base.py
-from services.utils.db import Base
+from api.services.utils.db import Base
 from sqlalchemy import Column, Integer, DateTime, SmallInteger
 from datetime import datetime
 

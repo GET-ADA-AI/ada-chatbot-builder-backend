@@ -3,8 +3,8 @@ import jwt
 from datetime import datetime, timedelta
 from fastapi import HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer
-from models.user import UserModel
-from services.utils.db import get_db
+from api.models.user import UserModel
+from api.services.utils.db import get_db
 from sqlalchemy.orm import Session
 import os
 from dotenv import load_dotenv

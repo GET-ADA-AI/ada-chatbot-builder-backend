@@ -1,6 +1,6 @@
 # services/auth.py
 from sqlalchemy.orm import Session
-from models.user import UserModel
+from api.models.user import UserModel
 from fastapi import HTTPException
 
 class AuthService:

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from routers.user import user_router
-from routers.auth import auth_router
-from services.utils.db import Base, engine
+from api.routers.user import user_router
+from api.routers.auth import auth_router
+from api.services.utils.db import Base, engine
 
 # Create the database tables if they don't exist 
 Base.metadata.create_all(bind=engine)

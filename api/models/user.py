@@ -1,6 +1,6 @@
 # models/user.py
 from sqlalchemy import Column, Integer, DateTime, SmallInteger, String
-from models.utils.base import BaseModel
+from api.models.utils.base import BaseModel
 import bcrypt
 
 class UserModel(BaseModel):

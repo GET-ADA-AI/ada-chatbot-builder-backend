@@ -10,4 +10,7 @@ In the virtual env install all requirements
 "pip install -r requirements.txt"
 
 Run the app localy
-"uvicorn main:app --reload"
+"uvicorn api.main:app --reload"
+
+To use docker write in terminal
+"docker compose up --build"

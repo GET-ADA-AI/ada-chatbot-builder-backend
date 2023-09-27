@@ -1,4 +1,3 @@
-# Un router es una serie de operaciones especificas a una ruta
 # /user
 from fastapi import APIRouter, Depends
 from api.schemas.user import UserCreate, UserGet, UserUpdate, UserUpdatePassword

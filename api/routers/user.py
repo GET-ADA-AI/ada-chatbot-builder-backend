@@ -10,7 +10,7 @@ from typing import List
 
 user_router = APIRouter()
 
-# Esto apunta a: localhost:8000/user POST
+# localhost:8000/user POST
 @user_router.post("/", response_model=UserGet)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """

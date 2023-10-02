@@ -5,7 +5,7 @@ import bcrypt
 
 class UserModel(BaseModel):
     """
-    User model that ineherits from BaseModel and maps to the user tabble in the database.
+    User model that ineherits from BaseModel and maps to the user table in the database.
     """
 
     # Table name

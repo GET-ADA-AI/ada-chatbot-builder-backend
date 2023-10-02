@@ -14,6 +14,7 @@ class UserModel(BaseModel):
     # Model's specific attributes
     name = Column(String(50), nullable=False, index=True)
     email = Column(String(255), nullable=False, unique=True, index=True)
+    
     # Atribute to store the hashed password is private
     _password = Column("password", String(255), nullable=False)
     

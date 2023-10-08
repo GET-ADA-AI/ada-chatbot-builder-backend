@@ -5,6 +5,7 @@ from api.models.chat import MessageModel #,ChatModel
 from api.schemas.chat import MessageCreate, MessageGet #ChatCreate, ChatGet
 from typing import List
 
+# El ChatService llama al ChatbotModel y este retorna una respuesta  que es la que se da al usuario
 class ChatService:
     """
     Service class for chat related operations

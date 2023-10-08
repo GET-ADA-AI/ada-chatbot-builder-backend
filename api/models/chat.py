@@ -51,6 +51,7 @@ class MessageModel(BaseModel):
     __tablename__ = "message"
 
     # Model's specific attributes
+    # Incluir mensaje de usuario y respuesta del chatbot
     content = Column(Text, nullable=False)
     user_id = Column(Integer, nullable=False)
     chatbot_id = Column(Integer, nullable=False)

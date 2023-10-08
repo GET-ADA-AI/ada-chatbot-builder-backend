@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, DateTime, SmallInteger, String
 from api.models.utils.base import BaseModel
 import bcrypt
 
+# ELIMINAR
 class DataModel(BaseModel):
     """
     Data model that ineherits from BaseModel and maps to the data table in the database.

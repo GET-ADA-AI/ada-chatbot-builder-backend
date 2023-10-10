@@ -1,4 +1,4 @@
-from api.schemas.chatbot import ChatbotCreate, ChatbotGet
+from api.schemas.chatbot import ChatbotCreate, ChatbotGet, ChatbotUpdate
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
@@ -82,6 +82,56 @@ class ChatbotService:
             return chatbot
 
         except SQLAlchemyError as e:
+            # Format the error message
+            error_message = f"Database error: {e.orig}"
+            # Raise an HTTPException with the error message
+            raise HTTPException(status_code=500, detail=error_message)
+
+    @staticmethod
+    def patch_chatbot(id: int, chatbot_update: ChatbotUpdate, db: Session) -> ChatbotGet:
+        """
+        Patch a chatbot in the PostgreSQL database
+
+        Parameters
+        ----------
+        id : int
+            ID of the chatbot to patch
+        chatbot_update : ChatbotUpdate
+            Pydantic model for updating a chatbot
+        db : Session
+            Database Session
+
+        Returns
+        -------
+        ChatbotGet
+            Pydantic model for retrieving a chatbot
+        """
+
+        try:
+            # Get chatbot with id
+            chatbot = db.query(ChatBotModel).filter(ChatBotModel.id == id).first()
+            # Check if chatbot exists
+            if chatbot is None:
+                # Raise an HTTPException with the not found error message
+                raise HTTPException(status_code=404, detail="chatbot not found")
+            
+            # Update the chatbot attributes
+            if chatbot_update.chatbot_type is not None:
+                chatbot.chatbot_type = chatbot_update.chatbot_type
+            if chatbot_update.user_id is not None:
+                chatbot.user_id = chatbot_update.user_id
+            
+            # Commit the changes to the database
+            db.commit()
+
+            # Refresh the chatbot
+            db.refresh(chatbot)
+            # Return the updated chatbot
+            return chatbot
+
+        except SQLAlchemyError as e:
+            # Rollback the changes if there is an error
+            db.rollback()
             # Format the error message
             error_message = f"Database error: {e.orig}"
             # Raise an HTTPException with the error message

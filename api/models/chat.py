@@ -51,12 +51,11 @@ class MessageModel(BaseModel):
     __tablename__ = "message"
 
     # Model's specific attributes
-    # Incluir mensaje de usuario y respuesta del chatbot
-    content = Column(Text, nullable=False)
+    user_content = Column(Text, nullable=False)
+    chatbot_content = Column(Text, nullable=False)
     user_id = Column(Integer, nullable=False)
     chatbot_id = Column(Integer, nullable=False)
     timestamp = Column(DateTime, nullable=False)
-    is_user_message = Column(Boolean, nullable=False)
 
 """
     # Foreign Key relationship to ChatModel

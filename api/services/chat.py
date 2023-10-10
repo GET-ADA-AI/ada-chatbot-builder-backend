@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 from api.models.chat import MessageModel #,ChatModel
 from api.schemas.chat import MessageCreate, MessageGet #ChatCreate, ChatGet
+from api.services.chatbot import ChatbotService
 from typing import List
 
 # El ChatService llama al ChatbotModel y este retorna una respuesta  que es la que se da al usuario
@@ -12,7 +13,7 @@ class ChatService:
     """
 
     @staticmethod
-    def send_message(message: MessageCreate, db: Session) -> List[MessageGet]:
+    def send_message(message: MessageCreate, db: Session) -> MessageGet:
         """
         Send a message to a specific chatbot and receive a response
 
@@ -25,45 +26,32 @@ class ChatService:
 
         Returns
         -------
-        List[MessageGet]
-            List of Pydantic models for retrieving messages
+        MessageGet
+            Pydantic models for retrieving messages
         """
 
         try:
-            # Create a new user_message instance
-            user_message = MessageModel(
-                content=message.content,
-                user_id=message.user_id,
-                chatbot_id=message.chatbot_id,
-                is_user_message=True,
-                timestamp=datetime.utcnow()
-            )
-
             # Interface with the chatbot service to get responses from chatbots
             # This part is not implemented, depends on chatbot service implementation
             # Call chatbot service here and add the response as a new message in the chat
             # For example:
-            # bot_response = chatbot_service.get_response(message.content)
+            bot_response = ChatbotService.get_response(message.content)
 
-            # Create a new bot_message instance
-            bot_message = MessageModel(
-                content=bot_response,
+            # Create a new message instance with the user and chatbot messages
+            message = MessageModel(
+                user_content=message.content,
+                chatbot_content=bot_response,
                 user_id=message.user_id,
                 chatbot_id=message.chatbot_id,
-                is_user_message=False,
                 timestamp=datetime.utcnow()
             )
 
             # Add the message to the database session
-            db.add(user_message)
+            db.add(message)
             db.commit()
-            db.refresh(user_message)
+            db.refresh(message)
 
-            db.add(bot_message)
-            db.commit()
-            db.refresh(bot_message)
-
-            return user_message, bot_message
+            return message
 
         except SQLAlchemyError as e:
             # Rollback the changes if there is an error

@@ -2,7 +2,7 @@ from api.schemas.chatbot import ChatbotCreate, ChatbotGet
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
-from api.models.chatbot import ChatBotModel  # Corrected the import path
+from api.models.chatbot import ChatBotModel
 
 class ChatbotService:
     """
@@ -31,13 +31,13 @@ class ChatbotService:
             db_chatbot = db.query(ChatBotModel).filter(ChatBotModel.user_id == chatbot.user_id).first()
             # If chatbot exists, raise an HTTPException
             if db_chatbot:
-                raise HTTPException(status_code=400, detail="User ID already registered")
+                raise HTTPException(status_code=400, detail="User already registered a chatbot")
             # If the chatbot does not exist, create a new chatbot
             new_chatbot = ChatBotModel(
                 chatbot_type=chatbot.chatbot_type,
                 user_id=chatbot.user_id,
-                configuration=chatbot.configuration,
-                data_source_ids=chatbot.data_source_ids
+                #configuration=chatbot.configuration,
+                #data_source_ids=chatbot.data_source_ids
             )
             # Add the chatbot to the database session
             db.add(new_chatbot)
@@ -114,6 +114,37 @@ class ChatbotService:
         except SQLAlchemyError as e:
             # Rollback the changes if there is an error
             db.rollback()
+            # Format the error message
+            error_message = f"Database error: {e.orig}"
+            # Raise an HTTPException with the error message
+            raise HTTPException(status_code=500, detail=error_message)
+
+    @staticmethod
+    def get_response(message: str) -> str:
+        """
+        Get a response to a user message
+
+        Parameters
+        ----------
+        message : str
+
+        Returns
+        -------
+        str
+        """
+        try:
+            response = "hola"
+            # IMPLEMENT AI AND LANGCHAIN TO GET A RESPONSE TO THE MESSAGE
+            # Get chatbot with chatbot_id
+            chatbot = db.query(ChatBotModel).filter(ChatBotModel.id == chatbot_id).first()
+            # Check if chatbot exists
+            if chatbot is None:
+                # Raise an HTTPException with the not found error message
+                raise HTTPException(status_code=404, detail="chatbot not found")
+            # Return the chatbot
+            return response
+
+        except SQLAlchemyError as e:
             # Format the error message
             error_message = f"Database error: {e.orig}"
             # Raise an HTTPException with the error message

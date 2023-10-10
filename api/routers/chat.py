@@ -11,7 +11,7 @@ from typing import List
 chat_router = APIRouter()
 
 # POST /message
-@message_router.post("/", response_model=MessageGet)
+@chat_router.post("/", response_model=MessageGet)
 def send_message(message: MessageCreate, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):
     """
     Send a message to a specific chatbot and receive a response
@@ -20,7 +20,7 @@ def send_message(message: MessageCreate, db: Session = Depends(get_db), current_
     return ChatService.send_message(message, db)
 
 # GET /message/{user_id}/{chatbot_id}
-@message_router.get("/{user_id}/{chatbot_id}", response_model=List[MessageGet])
+@chat_router.get("/{user_id}/{chatbot_id}", response_model=List[MessageGet])
 def get_chat_history(user_id: int, chatbot_id: int, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):
     """
     Retrieve chat history by user and chatbot IDs

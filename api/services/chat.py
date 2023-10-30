@@ -90,7 +90,7 @@ class ChatService:
                 user_content=message,
                 chatbot_content=bot_response,
                 user_id=1,
-                chatbot_id=1,
+                chatbot_id=2,
                 timestamp=datetime.utcnow()
             )
 

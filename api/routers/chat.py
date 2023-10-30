@@ -11,8 +11,8 @@ from typing import List
 chat_router = APIRouter()
 
 # POST /message
-@chat_router.post("/", response_model=MessageGet)
-def send_message(message: MessageCreate, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):
+@chat_router.post("/")
+def send_message(message: str, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):
     """
     Send a message to a specific chatbot and receive a response
     """

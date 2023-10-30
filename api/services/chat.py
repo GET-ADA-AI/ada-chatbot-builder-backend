@@ -5,6 +5,7 @@ from api.models.chat import MessageModel #,ChatModel
 from api.schemas.chat import MessageCreate, MessageGet #ChatCreate, ChatGet
 from api.services.chatbot import ChatbotService
 from typing import List
+from datetime import datetime
 
 # El ChatService llama al ChatbotModel y este retorna una respuesta  que es la que se da al usuario
 class ChatService:
@@ -13,7 +14,7 @@ class ChatService:
     """
 
     @staticmethod
-    def send_message(message: MessageCreate, db: Session) -> MessageGet:
+    def send_message(message: str, db: Session) -> str:
         """
         Send a message to a specific chatbot and receive a response
 
@@ -26,8 +27,7 @@ class ChatService:
 
         Returns
         -------
-        MessageGet
-            Pydantic models for retrieving messages
+        String response
         """
 
         try:
@@ -35,23 +35,23 @@ class ChatService:
             # This part is not implemented, depends on chatbot service implementation
             # Call chatbot service here and add the response as a new message in the chat
             # For example:
-            bot_response = ChatbotService.get_response(message.content)
+            bot_response = ChatbotService.get_response(message)
 
             # Create a new message instance with the user and chatbot messages
-            message = MessageModel(
-                user_content=message.content,
+            messageObject = MessageModel(
+                user_content=message,
                 chatbot_content=bot_response,
-                user_id=message.user_id,
-                chatbot_id=message.chatbot_id,
+                user_id=1,
+                chatbot_id=1,
                 timestamp=datetime.utcnow()
             )
 
             # Add the message to the database session
-            db.add(message)
+            db.add(messageObject)
             db.commit()
-            db.refresh(message)
+            db.refresh(messageObject)
 
-            return message
+            return bot_response
 
         except SQLAlchemyError as e:
             # Rollback the changes if there is an error

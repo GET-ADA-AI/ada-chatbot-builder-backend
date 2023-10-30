@@ -3,11 +3,21 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 from api.models.chatbot import ChatBotModel
+import os
+from dotenv import load_dotenv
+import openai
+
+# Load environment variables
+load_dotenv()
 
 class ChatbotService:
     """
     Service class for chatbot related operations
     """
+
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    messages = [{"role": "system", "content": "You are a intelligent assistant."}]
 
     @staticmethod
     def create_chatbot(chatbot: ChatbotCreate, db: Session) -> ChatbotGet:
@@ -170,32 +180,16 @@ class ChatbotService:
             raise HTTPException(status_code=500, detail=error_message)
 
     @staticmethod
-    def get_response(message: str) -> str:
-        """
-        Get a response to a user message
+    def get_response(userMessage: str) -> str:
+        message = userMessage
+        if message:
+            ChatbotService.messages.append(
+                {"role": "user", "content": message},
+            )
+            chat = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo", messages=ChatbotService.messages, temperature=0.5
+            )
 
-        Parameters
-        ----------
-        message : str
-
-        Returns
-        -------
-        str
-        """
-        try:
-            response = "hola"
-            # IMPLEMENT AI AND LANGCHAIN TO GET A RESPONSE TO THE MESSAGE
-            # Get chatbot with chatbot_id
-            chatbot = db.query(ChatBotModel).filter(ChatBotModel.id == chatbot_id).first()
-            # Check if chatbot exists
-            if chatbot is None:
-                # Raise an HTTPException with the not found error message
-                raise HTTPException(status_code=404, detail="chatbot not found")
-            # Return the chatbot
-            return response
-
-        except SQLAlchemyError as e:
-            # Format the error message
-            error_message = f"Database error: {e.orig}"
-            # Raise an HTTPException with the error message
-            raise HTTPException(status_code=500, detail=error_message)
+            response = chat.choices[0].message.content
+            ChatbotService.messages.append({"role":"assistant", "content":response})
+        return response

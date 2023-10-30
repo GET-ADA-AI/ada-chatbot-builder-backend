@@ -6,6 +6,16 @@ from api.models.chatbot import ChatBotModel
 import os
 from dotenv import load_dotenv
 import openai
+import pandas as pd
+import matplotlib.pyplot as plt
+from transformers import GPT2TokenizerFast
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
+from langchain.chains import ConversationalRetrievalChain
 
 # Load environment variables
 load_dotenv()
@@ -18,6 +28,17 @@ class ChatbotService:
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
     messages = [{"role": "system", "content": "You are a intelligent assistant."}]
+
+    # Train chatbot
+    loader = PyPDFLoader("univalle.pdf")
+    pages = loader.load_and_split()
+    chunks = pages
+
+    # Get embedding model
+    embeddings = OpenAIEmbeddings()
+
+    # Create vector database
+    db = FAISS.from_documents(chunks, embeddings)
 
     @staticmethod
     def create_chatbot(chatbot: ChatbotCreate, db: Session) -> ChatbotGet:
@@ -193,3 +214,13 @@ class ChatbotService:
             response = chat.choices[0].message.content
             ChatbotService.messages.append({"role":"assistant", "content":response})
         return response
+
+    @staticmethod
+    def get_trained_response(userMessage: str) -> str:
+        # Create QA chain to integrate similarity search with user queries (answer query from knowledge base)
+        chain = load_qa_chain(OpenAI(temperature=0), chain_type="stuff")
+
+        query = userMessage
+        docs = ChatbotService.db.similarity_search(query)
+
+        return chain.run(input_documents=docs, question=query)

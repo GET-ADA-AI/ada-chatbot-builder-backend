@@ -62,6 +62,54 @@ class ChatService:
             raise HTTPException(status_code=500, detail=error_message)
 
     @staticmethod
+    def send_trained_message(message: str, db: Session) -> str:
+        """
+        Send a message to a specific trained chatbot and receive a response
+
+        Parameters
+        ----------
+        message : MessageCreate
+            Pydantic model for creating a message
+        db : Session
+            Database Session
+
+        Returns
+        -------
+        String response
+        """
+
+        try:
+            # Interface with the chatbot service to get responses from chatbots
+            # This part is not implemented, depends on chatbot service implementation
+            # Call chatbot service here and add the response as a new message in the chat
+            # For example:
+            bot_response = ChatbotService.get_trained_response(message)
+
+            # Create a new message instance with the user and chatbot messages
+            messageObject = MessageModel(
+                user_content=message,
+                chatbot_content=bot_response,
+                user_id=1,
+                chatbot_id=1,
+                timestamp=datetime.utcnow()
+            )
+
+            # Add the message to the database session
+            db.add(messageObject)
+            db.commit()
+            db.refresh(messageObject)
+
+            return bot_response
+
+        except SQLAlchemyError as e:
+            # Rollback the changes if there is an error
+            db.rollback()
+            # Format the error message
+            error_message = f"Database error: {e.orig}"
+            # Raise an HTTPException with the error message
+            raise HTTPException(status_code=500, detail=error_message)
+
+    @staticmethod
     def get_chat_history(user_id: int, chatbot_id: int, db: Session) -> List[MessageGet]:
         """
         Retrieve chat history by user and chatbot IDs

@@ -19,6 +19,14 @@ def send_message(message: str, db: Session = Depends(get_db), current_user = Dep
 
     return ChatService.send_message(message, db)
 
+@chat_router.post("/trained")
+def send_trained_message(message: str, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):
+    """
+    Send a message to a specific trained chatbot and receive a response
+    """
+
+    return ChatService.send_trained_message(message, db)
+
 # GET /message/{user_id}/{chatbot_id}
 @chat_router.get("/{user_id}/{chatbot_id}", response_model=List[MessageGet])
 def get_chat_history(user_id: int, chatbot_id: int, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):

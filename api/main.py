@@ -5,12 +5,22 @@ from api.routers.chatbot import chatbot_router
 from api.routers.datasource import datasource_router
 from api.routers.chat import chat_router
 from api.services.utils.db import Base, engine
+from fastapi.middleware.cors import CORSMiddleware
 
 # Create the database tables if they don't exist 
 Base.metadata.create_all(bind=engine)
 
 # Create the FastAPI app
 app = FastAPI()
+
+# Add CORS middleware to allow preflight requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Update with your frontend's actual URL
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods, including OPTIONS
+    allow_headers=["*"],
+)
 
 # App routers
 app.include_router(user_router, prefix="/user", tags=["User"])

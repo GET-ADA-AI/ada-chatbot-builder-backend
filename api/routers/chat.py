@@ -20,7 +20,7 @@ def send_message(message: str, db: Session = Depends(get_db), current_user = Dep
     return ChatService.send_message(message, db)
 
 @chat_router.post("/trained")
-def send_trained_message(message: str, db: Session = Depends(get_db), current_user = Depends(JwtService.get_current_user)):
+def send_trained_message(message: str, db: Session = Depends(get_db)):
     """
     Send a message to a specific trained chatbot and receive a response
     """

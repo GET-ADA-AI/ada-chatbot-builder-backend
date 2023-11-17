@@ -29,17 +29,6 @@ class ChatbotService:
 
     messages = [{"role": "system", "content": "You are a intelligent assistant."}]
 
-    # Train chatbot
-    loader = PyPDFLoader("univalle.pdf")
-    pages = loader.load_and_split()
-    chunks = pages
-
-    # Get embedding model
-    embeddings = OpenAIEmbeddings()
-
-    # Create vector database
-    db = FAISS.from_documents(chunks, embeddings)
-
     @staticmethod
     def create_chatbot(chatbot: ChatbotCreate, db: Session) -> ChatbotGet:
         """
@@ -217,10 +206,21 @@ class ChatbotService:
 
     @staticmethod
     def get_trained_response(userMessage: str) -> str:
+        # Train chatbot
+        loader = PyPDFLoader("TrainingData.pdf")
+        pages = loader.load_and_split()
+        chunks = pages
+
+        # Get embedding model
+        embeddings = OpenAIEmbeddings()
+
+        # Create vector database
+        VectorDB = FAISS.from_documents(chunks, embeddings)
+
         # Create QA chain to integrate similarity search with user queries (answer query from knowledge base)
         chain = load_qa_chain(OpenAI(temperature=0), chain_type="stuff")
 
         query = userMessage
-        docs = ChatbotService.db.similarity_search(query)
+        docs = VectorDB.similarity_search(query)
 
         return chain.run(input_documents=docs, question=query)

@@ -4,6 +4,9 @@ from fastapi import HTTPException
 from api.models.datasource import DataSourceModel
 from api.schemas.datasource import DataSourceCreate, DataSourceGet
 from typing import List
+from PyPDF2 import PdfWriter
+from fpdf import FPDF
+from os import path
 
 class DataSourceService:
     """
@@ -11,7 +14,7 @@ class DataSourceService:
     """
 
     @staticmethod
-    def create_datasource(datasource: DataSourceCreate, db: Session) -> DataSourceGet:
+    def create_datasource(dataContent: str, db: Session):
         """
         Create a new datasource in the PostgreSQL database
 
@@ -29,16 +32,18 @@ class DataSourceService:
         """
 
         try:
-            #Create a new datasource
-            new_datasource = DataSourceModel(data_type=datasource.data_type, chatbot_id=datasource.chatbot_id)
-            # Add the datasource to the database session
-            db.add(new_datasource)
-            # Commit the changes to the database
-            db.commit()
-            # Refresh the datasource to get the datasource id
-            db.refresh(new_datasource)
-            # Return the new datasource
-            return new_datasource
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font('helvetica', '', 12)
+            #pdf.cell(text=dataContent)
+            pdf.multi_cell(0, 10, dataContent)
+            pdf.output('ParcialData.pdf')
+
+            pdf_merger = PdfWriter()
+            pdf_merger.append("TrainingData.pdf")
+            pdf_merger.append("ParcialData.pdf")
+            pdf_merger.write("TrainingData.pdf")
+            pdf_merger.close()
 
         except SQLAlchemyError as e:
             # Rollback the changes if there is an error

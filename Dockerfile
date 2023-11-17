@@ -12,5 +12,5 @@ ENV PYTHONPATH=/app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install openai
+RUN pip install openai PyPDF2 fpdf2
 RUN pip install -q langchain==0.0.150 pypdf pandas matplotlib tiktoken textract transformers openai faiss-cpu

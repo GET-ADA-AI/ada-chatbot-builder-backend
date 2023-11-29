@@ -1,4 +1,6 @@
 # ada-chatbot-builder-backend
+Video de funcionamiento: https://youtu.be/VEQS1B1m3Pc
+
 Create the .env based on the .example
 For the secret_key run command on bash and copy
 "openssl rand -hex 32"
